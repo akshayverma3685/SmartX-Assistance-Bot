@@ -84,48 +84,12 @@ Deployment: Docker + Railway/Heroku/VPS
 
 ---
 
-📂 Folder Structure
-
-SmartX-Assistance-Bot
-│── README.md
-│── requirements.txt
-│── config.py
-│── bot.py      
-├── core/
-│   ├── handler
-│   ├── services/ 
-│   ├── payments/
-│   ├── database/    
-│   └── utils/   
-├── admin/
-│   ├── panel.py 
-│   ├── broadcast.py
-│   └── stats.py
-│
-├── user/
-│   ├── onboarding.py  
-│   ├── premium.py
-│   └── profile.py
-│
-├── assets/
-│   ├── logo.png
-│   ├── icons/
-│   └── themes/
-│
-└── docs/
-    ├── DB_SCHEMA.md
-    ├── API_DOCS.md
-    └── ARCHITECTURE.md
-
-
----
-
 ⚙️ Installation Guide
 
 🔹 1. Clone Repo
 
-git clone https://github.com/akshayverma3685/SmartX-Assistance.git
-cd SmartX-Assistance
+git clone https://github.com/akshayverma3685/SmartX-Assistance-Bot.git
+cd SmartX-Assistance-Bot
 
 🔹 2. Install Dependencies
 

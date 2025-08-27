@@ -1,18 +1,10 @@
-📄 README – SmartX Assistance Bot
-
-<div align="center">
-
-🤖 SmartX Assistance
+🤖 SmartX Assistance Bot
 
 "Your All-in-One AI + Productivity Telegram Assistant"
-
-</div>
----
 
 ✨ Overview
 SmartX Assistance is an all-in-one Telegram Bot offering AI, utilities, downloaders, news, weather, fun, and business tools.
 It includes a Free & Premium plan plus an Admin Panel for monitoring and premium management.
----
 
 🚀 Features
 

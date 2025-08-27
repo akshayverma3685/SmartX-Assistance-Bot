@@ -1,102 +1,19 @@
-<h2>📊 Comparison Table</h2>
+## 📊 Comparison Table
 
-<table>
-  <thead>
-    <tr>
-      <th>Feature</th>
-      <th>Free Plan</th>
-      <th>Basic ₹199/m</th>
-      <th>Pro ₹499/3m</th>
-      <th>Ultra ₹1499/y</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>🧠 AI Chat</td>
-      <td>10/day</td>
-      <td>Unlimited</td>
-      <td>Unlimited 🚀</td>
-      <td>Unlimited + Custom 🤖</td>
-    </tr>
-    <tr>
-      <td>📄 Summarizer</td>
-      <td>2/day</td>
-      <td>20/month</td>
-      <td>100/month</td>
-      <td>Unlimited</td>
-    </tr>
-    <tr>
-      <td>🖼 AI Image</td>
-      <td>3 low-res</td>
-      <td>50 HD</td>
-      <td>200 HD/4K</td>
-      <td>Unlimited HD/4K</td>
-    </tr>
-    <tr>
-      <td>🎙 Text ↔ Voice</td>
-      <td>❌</td>
-      <td>❌</td>
-      <td>✅ Unlimited</td>
-      <td>✅ Unlimited + Custom</td>
-    </tr>
-    <tr>
-      <td>📥 Downloader</td>
-      <td>720p only</td>
-      <td>1080p, IG no WM</td>
-      <td>4K + Music</td>
-      <td>Unlimited 4K + TikTok</td>
-    </tr>
-    <tr>
-      <td>📝 Tools</td>
-      <td>Limited</td>
-      <td>Unlimited</td>
-      <td>Advanced</td>
-      <td>All Unlocked</td>
-    </tr>
-    <tr>
-      <td>🌦 Weather &amp; News</td>
-      <td>Daily 1</td>
-      <td>Unlimited</td>
-      <td>Auto Push</td>
-      <td>Priority Push</td>
-    </tr>
-    <tr>
-      <td>💼 Business Tools</td>
-      <td>❌</td>
-      <td>Invoice</td>
-      <td>Invoice + Expense</td>
-      <td>Full Suite + CRM</td>
-    </tr>
-    <tr>
-      <td>🎉 Entertainment</td>
-      <td>Unlimited</td>
-      <td>Unlimited</td>
-      <td>Exclusive Pack</td>
-      <td>All + Owner Exclusive</td>
-    </tr>
-    <tr>
-      <td>🎁 Referral Bonus</td>
-      <td>❌</td>
-      <td>+3 days</td>
-      <td>+7 days</td>
-      <td>+15 days</td>
-    </tr>
-    <tr>
-      <td>🎖 Special Badge</td>
-      <td>❌</td>
-      <td>❌</td>
-      <td>❌</td>
-      <td>✅ Ultra Badge</td>
-    </tr>
-    <tr>
-      <td>🎯 Early Access</td>
-      <td>❌</td>
-      <td>❌</td>
-      <td>❌</td>
-      <td>✅</td>
-    </tr>
-  </tbody>
-</table>
+| Feature                | Free Plan | Basic ₹199/m | Pro ₹499/3m | Ultra ₹1499/y |
+|------------------------|:---------:|:------------:|:-----------:|:-------------:|
+| 🧠 AI Chat             | 10/day    | Unlimited    | Unlimited 🚀 | Unlimited + Custom 🤖 |
+| 📄 Summarizer          | 2/day     | 20/month     | 100/month   | Unlimited |
+| 🖼 AI Image            | 3 low-res | 50 HD        | 200 HD/4K   | Unlimited HD/4K |
+| 🎙 Text ↔ Voice        | ❌        | ❌           | ✅ Unlimited | ✅ Unlimited + Custom |
+| 📥 Downloader          | 720p only | 1080p, IG no WM | 4K + Music | Unlimited 4K + TikTok |
+| 📝 Tools               | Limited   | Unlimited    | Advanced    | All Unlocked |
+| 🌦 Weather & News      | Daily 1   | Unlimited    | Auto Push   | Priority Push |
+| 💼 Business Tools      | ❌        | Invoice      | Invoice + Expense | Full Suite + CRM |
+| 🎉 Entertainment       | Unlimited | Unlimited    | Exclusive Pack | All + Owner Exclusive |
+| 🎁 Referral Bonus      | ❌        | +3 days      | +7 days     | +15 days |
+| 🎖 Special Badge       | ❌        | ❌           | ❌          | ✅ Ultra Badge |
+| 🎯 Early Access        | ❌        | ❌           | ❌          | ✅ |
 🤖 SmartX Assistance Bot
 
 "Your All-in-One AI + Productivity Telegram Assistant"

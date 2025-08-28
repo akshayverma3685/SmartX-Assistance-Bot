@@ -1,1 +1,8 @@
-
+{
+  "welcome": "👋 Welcome to SmartX Assistance!\nYou got a {days}-day Free Premium trial 🎁",
+  "choose_lang": "Please choose your language / भाषा चुनें:",
+  "main_menu": "Choose a feature below:",
+  "premium_active": "✅ Your Premium is active until {expiry}",
+  "premium_inactive": "⭐ You are on Free Plan. Get Premium for more features.",
+  "start_help": "Use the inline menu to navigate features. Type /profile to see account."
+}

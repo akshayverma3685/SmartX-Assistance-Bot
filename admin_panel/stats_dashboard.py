@@ -1,10 +1,5 @@
 # admin_panel/stats_dashboard.py
-"""
-Small admin script to gather stats and write CSV / JSON report.
-Run as: python -m admin_panel.stats_dashboard
-"""
 import asyncio
-import csv
 import json
 from core import database
 import logging

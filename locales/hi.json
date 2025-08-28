@@ -1,1 +1,8 @@
-
+{
+  "welcome": "👋 SmartX Assistance में welcome!\nTumhe {days}-day ka Free Premium trial mil gaya 🎁",
+  "choose_lang": "Language choose karo / भाषा चुनें:",
+  "main_menu": "Neeche se feature choose karo:",
+  "premium_active": "✅ Tumhara Premium active hai until {expiry}",
+  "premium_inactive": "⭐ Tum free plan pe ho. Premium leke aur features paao.",
+  "start_help": "Inline menu use karo. /profile type karo apna account dekhne ke liye."
+}

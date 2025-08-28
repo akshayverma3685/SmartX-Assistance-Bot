@@ -1,0 +1,16 @@
+# /etc/systemd/system/smartx_bot.service
+[Unit]
+Description=SmartX Assistance Telegram Bot
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/smartx_bot
+EnvironmentFile=/srv/smartx_bot/.env
+ExecStart=/usr/bin/python3 /srv/smartx_bot/bot.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

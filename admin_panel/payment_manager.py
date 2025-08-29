@@ -1,17 +1,3 @@
-#!/usr/bin/env python3
-"""
-admin_panel/payment_logs.py
-
-Admin CLI to view & export bot payments stored in MongoDB (collection: payments).
-
-Features:
-- Filter by user, status, date range
-- Pagination: --page, --limit
-- Export results to CSV
-- Output: table or JSON-lines
-- Show summary stats (--summary)
-"""
-
 import argparse
 import asyncio
 import logging
@@ -26,11 +12,14 @@ import config
 from core import database
 
 # logging setup
-LOG_PATH = os.path.join(os.path.dirname(__file__), "payment_logs.log")
+LOG_PATH = os.path.join(
+    os.path.dirname(__file__), "payment_logs.log")
 logging.basicConfig(
     level=getattr(logging, config.LOG_LEVEL, "INFO"),
     format="%(asctime)s | %(levelname)8s | %(name)s : %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout), logging.FileHandler(LOG_PATH)],
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler(LOG_PATH)],
 )
 logger = logging.getLogger("admin_panel.payment_logs")
 
@@ -106,8 +95,11 @@ async def export_csv(docs, path: str):
         keys = set()
         for d in docs:
             keys.update(d.keys())
-        preferred = ["timestamp", "user_id", "amount", "currency", "status", "method", "transaction_id"]
-        headers = [k for k in preferred if k in keys] + [k for k in sorted(keys) if k not in preferred]
+        preferred = [
+            "timestamp", "user_id",
+            "amount", "currency", "status", "method", "transaction_id"]
+        headers = [k for k in preferred if k in keys] + [
+            k for k in sorted(keys) if k not in preferred]
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
         for d in docs:

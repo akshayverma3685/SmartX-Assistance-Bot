@@ -7,7 +7,6 @@ ADMIN_PANEL_VERSION = os.getenv(
     "ADMIN_PANEL_VERSION",
     "1.0.0"
 )
-
 ADMIN_API_BASE_URL = os.getenv(
     "ADMIN_API_BASE_URL",
     "http://adminapi:80"

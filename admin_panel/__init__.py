@@ -1,36 +1,13 @@
-"""
-admin_panel.__init__
-
-Package bootstrap for SmartX Assistance Admin Panel.
-
-Provides:
-- package-level configuration
-- logger integration
-- FastAPI dependency 'admin_required' to protect admin
-  endpoints (x-api-key or session)
-- helper 'create_admin_app' to assemble FastAPI app by
-  auto-including routers from admin modules
-- common exports used across admin modules
-
-Design goals:
-- Minimal side-effects on import
-- Safe defaults (read config from environment or global config)
-- Ready for production (logging, secrets handling)
-"""
-
 from __future__ import annotations
 
-import os
 import logging
 from typing import Optional
 
-# Expose package version
 ADMIN_PANEL_VERSION = os.getenv(
     "ADMIN_PANEL_VERSION",
     "1.0.0"
 )
 
-# Configurable environment variables
 ADMIN_API_BASE_URL = os.getenv(
     "ADMIN_API_BASE_URL",
     "http://adminapi:80"
@@ -45,10 +22,7 @@ ADMIN_PANEL_TITLE = os.getenv(
     "SmartX Admin Panel"
 )
 
-# Logging setup with fallback
 try:
-    from core.logs import get_logs_manager  # type: ignore
-    _logs = get_logs_manager()
     _logger = logging.getLogger("admin_panel")
     _logger.setLevel(logging.INFO)
 except Exception:
@@ -63,23 +37,11 @@ except Exception:
         _logger.addHandler(ch)
     _logger.setLevel(logging.INFO)
 
-
-# -------------------------
-# Helper accessors
-# -------------------------
 def get_admin_api_key() -> Optional[str]:
     """Return Admin API key from environment/config."""
     return ADMIN_API_KEY
 
-
-# -------------------------
-# FastAPI dependency for admin protection
-# -------------------------
 def admin_required_header_checker():
-    """
-    Return a dependency function for FastAPI's Depends to require
-    'x-api-key' or session to access admin endpoints.
-    """
     from fastapi import Request, HTTPException
     import hmac
 
@@ -99,7 +61,6 @@ def admin_required_header_checker():
                 if provided == ADMIN_API_KEY:
                     return True
 
-        # Check signed session cookie
         try:
             sess_key = (
                 request.session.get("api_key")

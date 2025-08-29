@@ -21,5 +21,5 @@ __all__ = [
     "admin_menu_kb",
     "service_menu_kb",
     "start_menu_kb",
-    "profile_menu_kb".
+    "profile_menu_kb",
 ]

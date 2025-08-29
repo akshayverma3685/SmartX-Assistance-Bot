@@ -135,4 +135,5 @@ async def broadcast_send(request: Request, message: str = Form(...)):
         notice = "Broadcast scheduled ✅" if res.get("status") == "scheduled" else "Broadcast request sent."
         return templates.TemplateResponse("broadcast.html", {"request": request, "title": settings.TITLE, "notice": notice})
     except Exception:
-        return templates.TemplateResponse("broadcast.html", {"request": request, "title": settings.TITLE, "error": "Failed to schedule broadcast."}, status_code=500)
+        return templates.TemplateResponse("broadcast.html", {"request": request, "title": settings.TITLE, "error":
+                                                             "Failed to schedule broadcast."}, status_code=500)

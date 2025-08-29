@@ -11,11 +11,17 @@ It includes a Free & Premium plan plus an Admin Panel for monitoring and premium
 🟢 Free Features (Default Users)
 
 🧠 AI Chat → 10 messages/day
+
 📄 Document Summarizer → 2 files/day
+
 🖼 AI Image → 3 images/day (low-res)
+
 📥 Downloader → YouTube/Instagram Basic (720p, watermark)
+
 📝 Tools → Notes, To-Do, QR Generator, Shortener (limited use)
+
 🌦 Weather & News → Daily once
+
 🎉 Entertainment → Unlimited games & fun commands
 
 ⭐ Free Trial: 3 Days Premium For New Users 
@@ -25,14 +31,23 @@ It includes a Free & Premium plan plus an Admin Panel for monitoring and premium
 💎 Premium Features
 
 🧠 AI Chat → Unlimited (Fast responses, Custom AI personalities)
+
 📄 Summarizer → Unlimited files/month
+
 🖼 AI Image → Unlimited (HD/4K)
+
 🎙 Text ↔ Voice → Unlimited (voice customization in Ultra)
+
 📥 Downloader → Unlimited 4K YouTube, TikTok, Music (Spotify/Apple)
+
 📝 Tools → All unlocked (Currency, Crypto, Business calculators)
+
 🌦 Weather & News → Unlimited + Auto daily push
+
 💼 Business Tools → Invoice Generator, Expense Tracker, CRM (contacts save)
+
 🎉 Entertainment → Exclusive memes/games + Owner Exclusive Content
+
 🎖 Special Badge (Ultra Members only)
 
 🎯 Early Access to new features

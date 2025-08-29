@@ -10,6 +10,7 @@ from .service_menu import service_menu_kb
 from .start_menu import start_menu_kb
 from .profile_menu import profile_menu_kb
 
+
 __all__ = [
     "main_menu_kb",
     "ai_menu_kb",

@@ -4,13 +4,17 @@ import logging
 from typing import Optional
 
 from aiogram.types import BotCommand
-from aiogram.exceptions import TelegramBadRequest, TelegramRetryAfter, TelegramAPIError
+from aiogram.exceptions import 
+TelegramBadRequest, 
+TelegramRetryAfter,
+TelegramAPIError
 
 # try to import project modules (these should exist as per structure)
 try:
     import config
 except Exception as e:
-    raise RuntimeError("Missing config.py — create it before running bot. See README.") from e
+    raise RuntimeError(
+        "Missing config.py — create it before running bot. See README.") from e
 
 # core modules are optional at import time; but we'll attempt to import gracefully
 try:
@@ -20,7 +24,6 @@ except Exception:
     middleware = None
     scheduler = None
 
-# handlers package expected (each handler module should expose register(dp: Dispatcher) function)
 HANDLER_MODULES = [
     "handlers.start",
     "handlers.menu",
@@ -69,7 +72,8 @@ async def register_handlers(dispatcher: Dispatcher):
     """
     Dynamically import and register handler modules.
     Each module must implement `def register(dp: Dispatcher):` function.
-    This pattern avoids hard breaking import errors when some handler files are not yet implemented.
+    This pattern avoids hard breaking import errors
+    when some handler files are not yet implemented.
     """
     for module_path in HANDLER_MODULES:
         try:
@@ -79,11 +83,14 @@ async def register_handlers(dispatcher: Dispatcher):
                 register_fn(dispatcher)
                 logger.info("Registered handlers from %s", module_path)
             else:
-                logger.debug("Module %s has no register(dp) — skipping", module_path)
+                logger.debug(
+                    "Module %s has no register(dp) — skipping", module_path)
         except ModuleNotFoundError:
-            logger.debug("Handler module %s not found — skipping", module_path)
+            logger.debug(
+                "Handler module %s not found — skipping", module_path)
         except Exception as e:
-            logger.exception("Error while registering handlers from %s: %s", module_path, e)
+            logger.exception(
+                "Error while registering handlers from %s: %s", module_path, e)
 
 
 async def on_startup():
@@ -100,11 +107,11 @@ async def on_startup():
     global bot
     if database:
         try:
-            await database.connect()  # implement async connect in core/database.py
+            await database.connect()  
+            # implement async connect in core/database.py
             logger.info("Database connected.")
         except Exception as e:
             logger.exception("Database connection failed: %s", e)
-            # decide to continue or exit; here we exit because DB is critical
             raise
 
     if scheduler and getattr(scheduler, "start_scheduler", None):
@@ -172,13 +179,16 @@ def setup_middlewares(dispatcher: Dispatcher):
      - LoggingMiddleware
     """
     if not middleware:
-        logger.debug("No middleware package found; skipping middleware registration.")
+        logger.debug("No middleware package found; 
+        skipping middleware registration.")
         return
 
     try:
         if getattr(middleware, "LanguageMiddleware", None):
-            dispatcher.message.outer_middleware(middleware.LanguageMiddleware())
-            dispatcher.callback_query.outer_middleware(middleware.LanguageMiddleware())
+            dispatcher.message.outer_middleware(
+            middleware.LanguageMiddleware())
+            dispatcher.callback_query.outer_middleware(
+            middleware.LanguageMiddleware())
             logger.info("LanguageMiddleware registered.")
     except Exception:
         logger.exception("Failed to register LanguageMiddleware.")
@@ -192,7 +202,6 @@ async def start_polling():
     bot = Bot(token=config.BOT_TOKEN, parse_mode="HTML")
     dp = Dispatcher()
 
-    # attach bot to dispatcher if using aiogram v3 style; dp.bot = bot is not needed for v3 but keep reference
     dp.bind_bot(bot)
 
     setup_middlewares(dp)
@@ -214,13 +223,15 @@ async def start_polling():
 async def start_webhook():
     """
     Start webhook server. Requires config.WEBHOOK_* variables.
-    This implementation expects `config.WEBHOOK_URL` and optional `WEBAPP_HOST`, `WEBAPP_PORT`.
-    Use an ASGI server (e.g., uvicorn) or aiogram's built-in webhook runner depending on version.
+    This implementation expects `config.WEBHOOK_URL` and optional 
+    `WEBAPP_HOST`, `WEBAPP_PORT`.
+    Use an ASGI server (e.g., uvicorn) or aiogram's built-in 
+    webhook runner depending on version.
     """
-    # Minimal skeleton: user should implement real webhook handling in production
     webhook_url = getattr(config, "WEBHOOK_URL", None)
     if not webhook_url:
-        raise RuntimeError("WEBHOOK_URL not configured. Use polling or set webhook variables.")
+        raise RuntimeError(
+        "WEBHOOK_URL not configured. Use polling or set webhook variables.")
 
     global bot, dp
     bot = Bot(token=config.BOT_TOKEN, parse_mode="HTML")

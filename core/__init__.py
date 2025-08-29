@@ -12,7 +12,7 @@ Yeh package saare essential services handle karta hai:
 - Helpers & Utilities
 """
 
-from .constants import *        # Global constants
+from .constants import constants   # Global constants
 from .database import get_db    # Database connection
 from .cache import cache        # Cache instance
 from .logger import logger      # Structured logger

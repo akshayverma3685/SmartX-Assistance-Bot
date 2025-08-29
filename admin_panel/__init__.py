@@ -45,7 +45,7 @@ ADMIN_PANEL_TITLE = os.getenv(
     "SmartX Admin Panel"
 )
 
-# Logging: fallback if core.logs not available
+# Logging setup with fallback
 try:
     from core.logs import get_logs_manager  # type: ignore
     _logs = get_logs_manager()
@@ -91,7 +91,8 @@ def admin_required_header_checker():
         if provided and ADMIN_API_KEY:
             try:
                 if hmac.compare_digest(
-                    str(provided), str(ADMIN_API_KEY)
+                    str(provided),
+                    str(ADMIN_API_KEY)
                 ):
                     return True
             except Exception:
@@ -104,7 +105,9 @@ def admin_required_header_checker():
                 request.session.get("api_key")
                 if hasattr(request, "session") else None
             )
-            if sess_key and ADMIN_API_KEY and str(sess_key) == str(ADMIN_API_KEY):
+            if sess_key and ADMIN_API_KEY and str(sess_key) == str(
+                ADMIN_API_KEY
+            ):
                 return True
         except Exception:
             pass
@@ -186,7 +189,7 @@ def create_admin_app(
             "ok": True,
             "panel": app_title,
             "version": ADMIN_PANEL_VERSION,
-            "routes_included": included
+            "routes_included": included,
         }
 
     return app
@@ -234,4 +237,4 @@ __all__ = [
     "admin_required",
     "create_admin_app",
     "register_cli_commands",
-      ]
+]

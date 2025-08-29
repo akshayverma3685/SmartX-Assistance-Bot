@@ -25,6 +25,7 @@ app.add_middleware(
     domain=settings.COOKIE_DOMAIN,
 )
 
+
 def get_api_key(request: Request) -> str | None:
     # prefer session-stored key
     sess_key = request.session.get("api_key")
@@ -33,11 +34,13 @@ def get_api_key(request: Request) -> str | None:
     # fallback env (auto-login)
     return settings.ADMIN_API_KEY
 
+
 def require_login(request: Request) -> str | None:
     key = get_api_key(request)
     if not key:
         return None
     return key
+    
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -47,6 +50,7 @@ async def login_page(request: Request):
         request.session["api_key"] = env_key
         return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
     return templates.TemplateResponse("login.html", {"request": request, "title": settings.TITLE})
+
 
 @app.post("/login")
 async def login_submit(request: Request, api_key: str = Form(...)):
@@ -63,10 +67,12 @@ async def login_submit(request: Request, api_key: str = Form(...)):
     request.session["api_key"] = api_key
     return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
 
+
 @app.get("/logout")
 async def logout(request: Request):
     request.session.clear()
     return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
+
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
@@ -95,6 +101,7 @@ async def dashboard(request: Request):
     }
     return templates.TemplateResponse("dashboard.html", ctx)
 
+
 @app.get("/users/export")
 async def users_export(request: Request):
     api_key = require_login(request)
@@ -109,12 +116,14 @@ async def users_export(request: Request):
         }
         return StreamingResponse(r.aiter_raw(), media_type="text/csv", headers=headers)
 
+
 @app.get("/broadcast", response_class=HTMLResponse)
 async def broadcast_page(request: Request):
     api_key = require_login(request)
     if not api_key:
         return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
     return templates.TemplateResponse("broadcast.html", {"request": request, "title": settings.TITLE})
+
 
 @app.post("/broadcast")
 async def broadcast_send(request: Request, message: str = Form(...)):

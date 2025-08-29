@@ -1,6 +1,7 @@
-name: Deploy Bot
+name: Universal Deployment
 
 on:
+  workflow_dispatch:   # manually trigger bhi kar sakte ho
   push:
     branches: [ "main" ]
 
@@ -22,10 +23,53 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Example: Deploy to Heroku
+      # =========================
+      # Option 1: Deploy to Heroku
+      # =========================
       - name: Deploy to Heroku
+        if: ${{ secrets.DEPLOY_TARGET == 'heroku' }}
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "smartx-assistance-bot"
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
+
+      # =========================
+      # Option 2: Deploy to Render
+      # =========================
+      - name: Deploy to Render
+        if: ${{ secrets.DEPLOY_TARGET == 'render' }}
+        run: |
+          curl -X POST "$RENDER_DEPLOY_HOOK"
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      # =========================
+      # Option 3: Deploy to AWS Elastic Beanstalk
+      # =========================
+      - name: Deploy to AWS
+        if: ${{ secrets.DEPLOY_TARGET == 'aws' }}
+        run: |
+          zip -r app.zip .
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
+          aws elasticbeanstalk create-application-version \
+            --application-name SmartXBot \
+            --version-label v-${{ github.run_id }} \
+            --source-bundle S3Bucket="${{ secrets.AWS_S3_BUCKET }}",S3Key="app-${{ github.run_id }}.zip"
+          aws elasticbeanstalk update-environment \
+            --application-name SmartXBot \
+            --environment-name ${{ secrets.AWS_ENV_NAME }} \
+            --version-label v-${{ github.run_id }}
+
+      # =========================
+      # Option 4: Deploy with Docker (for VPS / EC2 / any server)
+      # =========================
+      - name: Build & Push Docker Image
+        if: ${{ secrets.DEPLOY_TARGET == 'docker' }}
+        run: |
+          docker build -t smartx-bot .
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker tag smartx-bot ${{ secrets.DOCKER_REPO }}:latest
+          docker push ${{ secrets.DOCKER_REPO }}:latest

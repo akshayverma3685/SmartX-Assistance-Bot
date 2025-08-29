@@ -25,18 +25,24 @@ import logging
 from typing import Optional
 
 # Expose package version
-ADMIN_PANEL_VERSION = os.getenv("ADMIN_PANEL_VERSION", "1.0.0")
+ADMIN_PANEL_VERSION = os.getenv(
+    "ADMIN_PANEL_VERSION",
+    "1.0.0"
+)
 
 # Configurable environment variables
 ADMIN_API_BASE_URL = os.getenv(
-    "ADMIN_API_BASE_URL", "http://adminapi:80"
+    "ADMIN_API_BASE_URL",
+    "http://adminapi:80"
 )
 ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", None)
 ADMIN_PANEL_SECRET = os.getenv(
-    "ADMIN_PANEL_SECRET", "change-me"
+    "ADMIN_PANEL_SECRET",
+    "change-me"
 )
 ADMIN_PANEL_TITLE = os.getenv(
-    "ADMIN_PANEL_TITLE", "SmartX Admin Panel"
+    "ADMIN_PANEL_TITLE",
+    "SmartX Admin Panel"
 )
 
 # Logging: fallback if core.logs not available
@@ -71,18 +77,22 @@ def get_admin_api_key() -> Optional[str]:
 # -------------------------
 def admin_required_header_checker():
     """
-    Return a dependency function for FastAPI's Depends
-    to require 'x-api-key' or session to access admin endpoints.
+    Return a dependency function for FastAPI's Depends to require
+    'x-api-key' or session to access admin endpoints.
     """
     from fastapi import Request, HTTPException
     import hmac
 
     def _dep(request: Request):
-        provided = request.headers.get("x-api-key") or \
-                   request.headers.get("X-API-KEY")
+        provided = (
+            request.headers.get("x-api-key") or
+            request.headers.get("X-API-KEY")
+        )
         if provided and ADMIN_API_KEY:
             try:
-                if hmac.compare_digest(str(provided), str(ADMIN_API_KEY)):
+                if hmac.compare_digest(
+                    str(provided), str(ADMIN_API_KEY)
+                ):
                     return True
             except Exception:
                 if provided == ADMIN_API_KEY:
@@ -157,13 +167,17 @@ def create_admin_app(
             mod = __import__(m, fromlist=["router"])
             router = getattr(mod, "router", None)
             if router:
-                app.include_router(router, prefix=f"/{m.split('.')[-1]}")
+                app.include_router(
+                    router,
+                    prefix=f"/{m.split('.')[-1]}"
+                )
                 included.append(m)
                 _logger.info("Included admin router: %s", m)
         except Exception as e:
             _logger.debug(
                 "Module %s not included (no router or import error): %s",
-                m, e
+                m,
+                e
             )
 
     @app.get("/", tags=["admin"])
@@ -220,4 +234,4 @@ __all__ = [
     "admin_required",
     "create_admin_app",
     "register_cli_commands",
-          ]
+      ]

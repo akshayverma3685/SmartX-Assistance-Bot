@@ -36,9 +36,11 @@ except Exception:
         _logger.addHandler(ch)
     _logger.setLevel(logging.INFO)
 
+
 def get_admin_api_key() -> Optional[str]:
     """Return Admin API key from environment/config."""
     return ADMIN_API_KEY
+
 
 def admin_required_header_checker():
     from fastapi import Request, HTTPException

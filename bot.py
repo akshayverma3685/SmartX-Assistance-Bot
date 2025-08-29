@@ -1,22 +1,7 @@
-# bot.py
-"""
-SmartX Assistance - Main entry point
-
-Responsibilities:
-- Load config & secrets
-- Initialize Bot, Dispatcher, DB connection (via core.database)
-- Register middlewares and handlers dynamically (handlers/*.py must implement `register(dp)`)
-- Start scheduler (if core.scheduler exists)
-- Support both polling and webhook modes (configurable)
-- Graceful startup/shutdown with health checks & logging
-"""
-
 import asyncio
 import logging
-import os
 from typing import Optional
 
-from aiogram import Bot, Dispatcher, types
 from aiogram.types import BotCommand
 from aiogram.exceptions import TelegramBadRequest, TelegramRetryAfter, TelegramAPIError
 

@@ -48,8 +48,12 @@ async def login_page(request: Request):
     env_key = settings.ADMIN_API_KEY
     if env_key:
         request.session["api_key"] = env_key
-        return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    return templates.TemplateResponse("login.html", {"request": request, "title": settings.TITLE})
+        return RedirectResponse(
+            "/", status_code=status.HTTP_302_FOUND
+        )
+    return templates.TemplateResponse(
+        "login.html", {"request": request, "title": settings.TITLE}
+    )
 
 
 @app.post("/login")
@@ -61,35 +65,47 @@ async def login_submit(request: Request, api_key: str = Form(...)):
     except Exception:
         return templates.TemplateResponse(
             "login.html",
-            {"request": request, "title": settings.TITLE, "error": "Invalid API key or Admin API unreachable."},
+            {
+                "request": request,
+                "title": settings.TITLE,
+                "error": "Invalid API key or Admin API unreachable.",
+            },
             status_code=401,
         )
     request.session["api_key"] = api_key
-    return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+    return RedirectResponse(
+        "/", status_code=status.HTTP_302_FOUND
+    )
 
 
 @app.get("/logout")
 async def logout(request: Request):
     request.session.clear()
-    return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
+    return RedirectResponse(
+        "/login", status_code=status.HTTP_302_FOUND
+    )
 
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
     api_key = require_login(request)
     if not api_key:
-        return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(
+            "/login", status_code=status.HTTP_302_FOUND
+        )
 
     # Fetch stats & health
     stats, health = {}, {}
     error = None
     try:
         stats = await api_get("/stats", api_key)
-        async with httpx.AsyncClient(base_url=settings.ADMIN_API_BASE_URL, timeout=10) as client:
+        async with httpx.AsyncClient(
+            base_url=settings.ADMIN_API_BASE_URL, timeout=10
+        ) as client:
             r = await client.get("/health")
             r.raise_for_status()
             health = r.json()
-    except Exception as e:
+    except Exception:
         error = "Admin API error — check connectivity / key."
 
     ctx = {
@@ -106,34 +122,65 @@ async def dashboard(request: Request):
 async def users_export(request: Request):
     api_key = require_login(request)
     if not api_key:
-        return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(
+            "/login", status_code=status.HTTP_302_FOUND
+        )
     # Stream CSV directly from Admin API
-    async with httpx.AsyncClient(base_url=settings.ADMIN_API_BASE_URL, timeout=None) as client:
-        r = await client.get("/export/users.csv", headers={"x-api-key": api_key})
+    async with httpx.AsyncClient(
+        base_url=settings.ADMIN_API_BASE_URL, timeout=None
+    ) as client:
+        r = await client.get(
+            "/export/users.csv",
+            headers={"x-api-key": api_key}
+        )
         r.raise_for_status()
         headers = {
-            "Content-Disposition": r.headers.get("content-disposition", "attachment; filename=users.csv")
+            "Content-Disposition": r.headers.get(
+                "content-disposition", "attachment; filename=users.csv"
+            )
         }
-        return StreamingResponse(r.aiter_raw(), media_type="text/csv", headers=headers)
+        return StreamingResponse(
+            r.aiter_raw(), media_type="text/csv", headers=headers
+        )
 
 
 @app.get("/broadcast", response_class=HTMLResponse)
 async def broadcast_page(request: Request):
     api_key = require_login(request)
     if not api_key:
-        return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
-    return templates.TemplateResponse("broadcast.html", {"request": request, "title": settings.TITLE})
+        return RedirectResponse(
+            "/login", status_code=status.HTTP_302_FOUND
+        )
+    return templates.TemplateResponse(
+        "broadcast.html", {"request": request, "title": settings.TITLE}
+    )
 
 
 @app.post("/broadcast")
 async def broadcast_send(request: Request, message: str = Form(...)):
     api_key = require_login(request)
     if not api_key:
-        return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(
+            "/login", status_code=status.HTTP_302_FOUND
+        )
     try:
         res = await api_post("/broadcast", api_key, {"message": message})
-        notice = "Broadcast scheduled ✅" if res.get("status") == "scheduled" else "Broadcast request sent."
-        return templates.TemplateResponse("broadcast.html", {"request": request, "title": settings.TITLE, "notice": notice})
+        notice = (
+            "Broadcast scheduled ✅"
+            if res.get("status") == "scheduled"
+            else "Broadcast request sent."
+        )
+        return templates.TemplateResponse(
+            "broadcast.html",
+            {"request": request, "title": settings.TITLE, "notice": notice}
+        )
     except Exception:
-        return templates.TemplateResponse("broadcast.html", {"request": request, "title": settings.TITLE, "error":
-                                                             "Failed to schedule broadcast."}, status_code=500)
+        return templates.TemplateResponse(
+            "broadcast.html",
+            {
+                "request": request,
+                "title": settings.TITLE,
+                "error": "Failed to schedule broadcast.",
+            },
+            status_code=500,
+    )

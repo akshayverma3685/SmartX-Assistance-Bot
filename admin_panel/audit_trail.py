@@ -35,7 +35,10 @@ LOG_PATH = os.path.join(os.path.dirname(__file__), "audit_trail.log")
 logging.basicConfig(
     level=getattr(logging, config.LOG_LEVEL, "INFO"),
     format="%(asctime)s | %(levelname)8s | %(name)s : %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout), logging.FileHandler(LOG_PATH)],
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler(LOG_PATH),
+    ],
 )
 logger = logging.getLogger("admin_panel.audit_trail")
 
@@ -51,7 +54,6 @@ def parse_date(val: Optional[str]) -> Optional[datetime]:
         return dt.astimezone(timezone.utc)
     except Exception:
         try:
-            # try YYYY-MM-DD
             dt = datetime.strptime(val, "%Y-%m-%d")
             return dt.replace(tzinfo=timezone.utc)
         except Exception:
@@ -101,7 +103,12 @@ def print_table(rows: List[Dict[str, Any]], columns: List[str]):
 
 
 # ---------------- DB operations ----------------
-async def fetch_audits(query: Dict[str, Any], page: int = 1, limit: int = 50, sort_desc: bool = True) -> List[Dict[str, Any]]:
+async def fetch_audits(
+    query: Dict[str, Any],
+    page: int = 1,
+    limit: int = 50,
+    sort_desc: bool = True,
+) -> List[Dict[str, Any]]:
     db = database.get_mongo_db()
     skip = (page - 1) * limit
     sort_order = [("timestamp", -1 if sort_desc else 1)]
@@ -121,12 +128,13 @@ async def export_csv(docs: List[Dict[str, Any]], path: str):
     if not docs:
         logger.info("No records to export.")
         return
-    # union keys and prefer certain order
     keys = set()
     for d in docs:
         keys.update(d.keys())
     preferred = ["timestamp", "action", "actor", "target_user", "details"]
-    headers = [k for k in preferred if k in keys] + [k for k in sorted(keys) if k not in preferred]
+    headers = [k for k in preferred if k in keys] + [
+        k for k in sorted(keys) if k not in preferred
+    ]
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
@@ -142,10 +150,11 @@ async def export_csv(docs: List[Dict[str, Any]], path: str):
     logger.info("Exported %d audit records to %s", len(docs), path)
 
 
-async def export_all_to_csv(query: Dict[str, Any], path: str, batch_size: int = 1000):
+async def export_all_to_csv(
+    query: Dict[str, Any], path: str, batch_size: int = 1000
+):
     db = database.get_mongo_db()
     cursor = db.admin_actions.find(query).sort("timestamp", 1)
-    # write streamingly
     first = True
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = None
@@ -154,12 +163,13 @@ async def export_all_to_csv(query: Dict[str, Any], path: str, batch_size: int = 
             batch.append(doc)
             if len(batch) >= batch_size:
                 if first:
-                    # compute headers
                     keys = set()
                     for d in batch:
                         keys.update(d.keys())
                     preferred = ["timestamp", "action", "actor", "target_user", "details"]
-                    headers = [k for k in preferred if k in keys] + [k for k in sorted(keys) if k not in preferred]
+                    headers = [k for k in preferred if k in keys] + [
+                        k for k in sorted(keys) if k not in preferred
+                    ]
                     writer = csv.DictWriter(f, fieldnames=headers)
                     writer.writeheader()
                     first = False
@@ -180,7 +190,9 @@ async def export_all_to_csv(query: Dict[str, Any], path: str, batch_size: int = 
                 for d in batch:
                     keys.update(d.keys())
                 preferred = ["timestamp", "action", "actor", "target_user", "details"]
-                headers = [k for k in preferred if k in keys] + [k for k in sorted(keys) if k not in preferred]
+                headers = [k for k in preferred if k in keys] + [
+                    k for k in sorted(keys) if k not in preferred
+                ]
                 writer = csv.DictWriter(f, fieldnames=headers)
                 writer.writeheader()
             for d in batch:
@@ -217,11 +229,6 @@ async def tail_audits(query: Dict[str, Any], poll_interval: float = 1.5):
 
 
 async def purge_older_than(days: int) -> int:
-    """
-    Delete (hard delete) records older than given days.
-    Returns number deleted.
-    Use with caution: require --confirm at CLI.
-    """
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     db = database.get_mongo_db()
     res = await db.admin_actions.delete_many({"timestamp": {"$lt": cutoff}})
@@ -231,20 +238,34 @@ async def purge_older_than(days: int) -> int:
 # ---------------- CLI ----------------
 def build_argparser():
     p = argparse.ArgumentParser(description="Admin: Audit Trail Viewer & Manager")
-    p.add_argument("--action", help="Filter by action (regex, case-insensitive)")
+    p.add_argument(
+        "--action", help="Filter by action (regex, case-insensitive)"
+    )
     p.add_argument("--actor", help="Filter by actor id")
     p.add_argument("--target", help="Filter by target_user id")
-    p.add_argument("--from", dest="from_date", help="From date (ISO or YYYY-MM-DD)")
-    p.add_argument("--to", dest="to_date", help="To date (ISO or YYYY-MM-DD)")
+    p.add_argument(
+        "--from",
+        dest="from_date",
+        help="From date (ISO or YYYY-MM-DD)"
+    )
+    p.add_argument(
+        "--to", dest="to_date", help="To date (ISO or YYYY-MM-DD)"
+    )
     p.add_argument("--page", type=int, default=1, help="Page number")
     p.add_argument("--limit", type=int, default=50, help="Page size")
-    p.add_argument("--follow", action="store_true", help="Tail new audit entries (polling)")
+    p.add_argument(
+        "--follow", action="store_true", help="Tail new audit entries (polling)"
+    )
     p.add_argument("--export", help="Export current page results to CSV")
     p.add_argument("--export-all", help="Export ALL matching records to CSV (streaming)")
     p.add_argument("--export-batch", type=int, default=1000, help="Batch size for export-all")
     p.add_argument("--jsonl", action="store_true", help="Output JSON-lines")
     p.add_argument("--quiet", action="store_true", help="Minimal output")
-    p.add_argument("--purge-days", type=int, help="Purge audit records older than N days (requires --confirm)")
+    p.add_argument(
+        "--purge-days",
+        type=int,
+        help="Purge audit records older than N days (requires --confirm)"
+    )
     p.add_argument("--confirm", action="store_true", help="Confirm destructive operations (purge)")
     return p
 
@@ -253,14 +274,12 @@ async def run():
     parser = build_argparser()
     args = parser.parse_args()
 
-    # build query
     try:
         query = build_query(args)
     except Exception as e:
         logger.error("Error building query: %s", e)
         return
 
-    # connect db
     try:
         await database.connect()
     except Exception as e:
@@ -294,27 +313,37 @@ async def run():
         else:
             if not args.quiet:
                 print(f"Showing page {args.page} (limit {args.limit}) — total matching: {total}")
-            # format rows for table
+
             rows = []
             for d in docs:
+                details_val = d.get("details")
+                if details_val:
+                    details_json = json.dumps(details_val, ensure_ascii=False)
+                    truncated = details_json[:80]
+                    if len(details_json) > 80:
+                        truncated += "..."
+                else:
+                    truncated = ""
                 rows.append({
                     "timestamp": d.get("timestamp"),
                     "action": d.get("action"),
                     "actor": d.get("actor"),
                     "target_user": d.get("target_user"),
-                    "details": (json.dumps(d.get("details"), ensure_ascii=False)[:80] + ("..." if d.get("details") and len(json.dumps(d.get("details"))) > 80 else "")) if d.get("details") else ""
+                    "details": truncated,
                 })
             cols = ["timestamp", "action", "actor", "target_user", "details"]
             if not args.jsonl and not args.quiet:
                 print_table(rows, cols)
 
-        # export current page
         if args.export:
             await export_csv(docs, args.export)
 
-        # export all matching
         if args.export_all:
-            logger.info("Streaming export-all to %s (batch %d)...", args.export_all, args.export_batch)
+            logger.info(
+                "Streaming export-all to %s (batch %d)...",
+                args.export_all,
+                args.export_batch,
+            )
             await export_all_to_csv(query, args.export_all, batch_size=args.export_batch)
 
     finally:

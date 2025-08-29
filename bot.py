@@ -4,11 +4,11 @@ import logging
 from typing import Optional
 
 from aiogram.types import BotCommand
-from aiogram.exceptions import 
-TelegramBadRequest, 
-TelegramRetryAfter,
-TelegramAPIError
-
+from aiogram.exceptions import (
+     TelegramBadRequest, 
+     TelegramRetryAfter,
+     TelegramAPIError
+)
 # try to import project modules (these should exist as per structure)
 try:
     import config

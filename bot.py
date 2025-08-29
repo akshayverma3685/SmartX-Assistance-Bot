@@ -179,9 +179,8 @@ def setup_middlewares(dispatcher: Dispatcher):
     """
     if not middleware:
         logger.debug(
-             "No middleware package 
-     found; skipping middleware 
-     registration."
+             "No middleware package found;
+skipping middleware registration."
         )
         return
 

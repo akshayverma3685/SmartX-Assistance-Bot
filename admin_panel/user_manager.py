@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-admin_panel/user_management.py
+admin_panel/user_manager.py
 
 Admin CLI to manage users: search, view, ban/unban, extend premium, set plan, soft-delete, export.
 
 Usage examples:
-  python user_management.py --list --page 1 --limit 30
-  python user_management.py --search 123456
-  python user_management.py --detail 123456
-  python user_management.py --ban 123456 --confirm
-  python user_management.py --unban 123456 --confirm
-  python user_management.py --extend 123456 --days 30 --confirm
-  python user_management.py --set-plan 123456 --plan premium --days 30 --confirm
-  python user_management.py --delete 123456 --confirm
-  python user_management.py --list --plan premium --export premium_page1.csv
+  python user_manager.py --list --page 1 --limit 30
+  python user_manager.py --search 123456
+  python user_manager.py --detail 123456
+  python user_manager.py --ban 123456 --confirm
+  python user_manager.py --unban 123456 --confirm
+  python user_manager.py --extend 123456 --days 30 --confirm
+  python user_manager.py --set-plan 123456 --plan premium --days 30 --confirm
+  python user_manager.py --delete 123456 --confirm
+  python user_manager.py --list --plan premium --export premium_page1.csv
 """
 
 import argparse

@@ -2,7 +2,6 @@ from aiogram import Bot, Dispatcher
 import asyncio
 import logging
 from typing import Optional
-
 from aiogram.types import BotCommand
 from aiogram.exceptions import (
      TelegramBadRequest, 
@@ -179,8 +178,9 @@ def setup_middlewares(dispatcher: Dispatcher):
      - LoggingMiddleware
     """
     if not middleware:
-        logger.debug("No middleware package found; 
-        skipping middleware registration.")
+        logger.debug(
+             "No middleware package found; skipping middleware registration."
+        )
         return
 
     try:

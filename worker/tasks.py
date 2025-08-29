@@ -9,6 +9,7 @@ from core import database
 logger = logging.getLogger("smartx_bot.tasks")
 
 
+
 @celery_app.task(bind=True)
 def download_and_upload(
     self, url: str, user_id: int, max_filesize_bytes: int = None

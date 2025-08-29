@@ -40,7 +40,7 @@ def require_login(request: Request) -> str | None:
     if not key:
         return None
     return key
-    
+
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -183,4 +183,4 @@ async def broadcast_send(request: Request, message: str = Form(...)):
                 "error": "Failed to schedule broadcast.",
             },
             status_code=500,
-    )
+       )

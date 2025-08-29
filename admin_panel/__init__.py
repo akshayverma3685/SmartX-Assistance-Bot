@@ -6,10 +6,10 @@ Package bootstrap for SmartX Assistance Admin Panel.
 Provides:
 - package-level configuration
 - logger integration
-- FastAPI dependency 'admin_required' to protect admin endpoints
-  (x-api-key or session)
-- helper 'create_admin_app' to assemble FastAPI app by auto-including
-  routers from admin modules
+- FastAPI dependency 'admin_required' to protect admin
+  endpoints (x-api-key or session)
+- helper 'create_admin_app' to assemble FastAPI app by
+  auto-including routers from admin modules
 - common exports used across admin modules
 
 Design goals:
@@ -27,7 +27,7 @@ from typing import Optional
 # Expose package version
 ADMIN_PANEL_VERSION = os.getenv("ADMIN_PANEL_VERSION", "1.0.0")
 
-# Configurable env variables
+# Configurable environment variables
 ADMIN_API_BASE_URL = os.getenv(
     "ADMIN_API_BASE_URL", "http://adminapi:80"
 )
@@ -39,7 +39,7 @@ ADMIN_PANEL_TITLE = os.getenv(
     "ADMIN_PANEL_TITLE", "SmartX Admin Panel"
 )
 
-# Logging: use core.logs if available, otherwise fallback
+# Logging: fallback if core.logs not available
 try:
     from core.logs import get_logs_manager  # type: ignore
     _logs = get_logs_manager()
@@ -90,8 +90,10 @@ def admin_required_header_checker():
 
         # Check signed session cookie
         try:
-            sess_key = request.session.get("api_key") \
-                       if hasattr(request, "session") else None
+            sess_key = (
+                request.session.get("api_key")
+                if hasattr(request, "session") else None
+            )
             if sess_key and ADMIN_API_KEY and str(sess_key) == str(ADMIN_API_KEY):
                 return True
         except Exception:
@@ -111,12 +113,14 @@ admin_required = admin_required_header_checker()
 # -------------------------
 # Create FastAPI app helper
 # -------------------------
-def create_admin_app(include_modules: Optional[list[str]] = None,
-                     title: Optional[str] = None):
+def create_admin_app(
+    include_modules: Optional[list[str]] = None,
+    title: Optional[str] = None
+):
     """
     Create a FastAPI app pre-configured for the admin panel.
 
-    - include_modules: list of module paths to auto-include routers from.
+    - include_modules: list of module paths to auto-include routers.
     - title: override panel title
 
     Returns the FastAPI app instance.
@@ -158,7 +162,8 @@ def create_admin_app(include_modules: Optional[list[str]] = None,
                 _logger.info("Included admin router: %s", m)
         except Exception as e:
             _logger.debug(
-                "Module %s not included (no router or import error): %s", m, e
+                "Module %s not included (no router or import error): %s",
+                m, e
             )
 
     @app.get("/", tags=["admin"])
@@ -215,4 +220,4 @@ __all__ = [
     "admin_required",
     "create_admin_app",
     "register_cli_commands",
-      ]
+          ]

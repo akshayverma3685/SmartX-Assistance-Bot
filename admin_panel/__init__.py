@@ -97,8 +97,10 @@ def admin_required_header_checker():
         except Exception:
             pass
 
-        raise HTTPException(status_code=403,
-                            detail="Admin authorization required")
+        raise HTTPException(
+            status_code=403,
+            detail="Admin authorization required"
+        )
 
     return _dep
 
@@ -121,7 +123,6 @@ def create_admin_app(include_modules: Optional[list[str]] = None,
     """
     from fastapi import FastAPI
     from fastapi.middleware.sessions import SessionMiddleware
-    import importlib
 
     app_title = title or ADMIN_PANEL_TITLE
     app = FastAPI(title=app_title)
@@ -177,27 +178,28 @@ def create_admin_app(include_modules: Optional[list[str]] = None,
 # -------------------------
 def register_cli_commands(cli_app):
     """Register admin-panel CLI subcommands into main CLI app."""
-    try:
-        modules = [
-            "admin_panel.user_management",
-            "admin_panel.payment_logs",
-            "admin_panel.logs_viewer",
-            "admin_panel.settings_manager",
-            "admin_panel.broadcast",
-            "admin_panel.stats_dashboard",
-        ]
-        for mod_name in modules:
-            try:
-                m = __import__(mod_name, fromlist=["cli", "main"])
-                if hasattr(m, "cli") and hasattr(cli_app, "add_typer"):
-                    cli_app.add_typer(getattr(m, "cli"),
-                                      name=mod_name.split(".")[-1])
-                elif hasattr(m, "main") and hasattr(cli_app, "command"):
-                    cli_app.command(name=mod_name.split(".")[-1])(getattr(m, "main"))
-            except Exception:
-                _logger.debug("Failed to register CLI from %s", mod_name)
-    except Exception:
-        _logger.debug("register_cli_commands helper failed")
+    modules = [
+        "admin_panel.user_management",
+        "admin_panel.payment_logs",
+        "admin_panel.logs_viewer",
+        "admin_panel.settings_manager",
+        "admin_panel.broadcast",
+        "admin_panel.stats_dashboard",
+    ]
+    for mod_name in modules:
+        try:
+            m = __import__(mod_name, fromlist=["cli", "main"])
+            if hasattr(m, "cli") and hasattr(cli_app, "add_typer"):
+                cli_app.add_typer(
+                    getattr(m, "cli"),
+                    name=mod_name.split(".")[-1]
+                )
+            elif hasattr(m, "main") and hasattr(cli_app, "command"):
+                cli_app.command(
+                    name=mod_name.split(".")[-1]
+                )(getattr(m, "main"))
+        except Exception:
+            _logger.debug("Failed to register CLI from %s", mod_name)
 
 
 # -------------------------
@@ -213,4 +215,4 @@ __all__ = [
     "admin_required",
     "create_admin_app",
     "register_cli_commands",
-]
+      ]

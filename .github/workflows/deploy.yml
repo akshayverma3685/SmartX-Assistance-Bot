@@ -24,10 +24,10 @@ jobs:
           pip install -r requirements.txt
 
       # =========================
-      # Option 1: Deploy to Heroku
+      # Deploy to Heroku (only if creds exist)
       # =========================
       - name: Deploy to Heroku
-        if: ${{ secrets.DEPLOY_TARGET == 'heroku' }}
+        if: ${{ secrets.HEROKU_API_KEY != '' }}
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
@@ -35,20 +35,18 @@ jobs:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
       # =========================
-      # Option 2: Deploy to Render
+      # Deploy to Render
       # =========================
       - name: Deploy to Render
-        if: ${{ secrets.DEPLOY_TARGET == 'render' }}
-        env:
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        if: ${{ secrets.RENDER_DEPLOY_HOOK != '' }}
         run: |
-          curl -X POST "$RENDER_DEPLOY_HOOK"
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
 
       # =========================
-      # Option 3: Deploy to AWS Elastic Beanstalk
+      # Deploy to AWS Elastic Beanstalk
       # =========================
       - name: Deploy to AWS
-        if: ${{ secrets.DEPLOY_TARGET == 'aws' }}
+        if: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -60,20 +58,21 @@ jobs:
           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set default.region $AWS_REGION
+          aws s3 cp app.zip s3://$AWS_S3_BUCKET/app-${{ github.run_id }}.zip
           aws elasticbeanstalk create-application-version \
             --application-name SmartXBot \
             --version-label v-${{ github.run_id }} \
-            --source-bundle S3Bucket="$AWS_S3_BUCKET",S3Key="app-${{ github.run_id }}.zip"
+            --source-bundle S3Bucket=$AWS_S3_BUCKET,S3Key=app-${{ github.run_id }}.zip
           aws elasticbeanstalk update-environment \
             --application-name SmartXBot \
             --environment-name $AWS_ENV_NAME \
             --version-label v-${{ github.run_id }}
 
       # =========================
-      # Option 4: Deploy with Docker
+      # Deploy with Docker
       # =========================
       - name: Build & Push Docker Image
-        if: ${{ secrets.DEPLOY_TARGET == 'docker' }}
+        if: ${{ secrets.DOCKER_USERNAME != '' }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

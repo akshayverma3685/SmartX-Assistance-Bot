@@ -21,13 +21,7 @@ It includes **AI tools, media downloaders, business utilities, premium features,
 - ✅ Structured logging (`logs/`)
 - ✅ CI/CD ready (GitHub Actions workflows)
 - ✅ Flexible deployment (Polling / Webhook)
-
----
-
-## 📂 Project Structure
-
-smartx-bot/ │── bot.py │── config.py │── requirements.txt │── .env │── README.md │ ├── core/            # Core utilities (database, constants, middleware) ├── handlers/        # Features: AI, tools, business, premium, etc. ├── services/        # External services (AI, news, payments, etc.) ├── admin-panel/     # Admin utilities & monitoring ├── webhook/         # Webhook server (FastAPI) ├── logs/            # Log files (bot.log, error.log, payments.log, usage.log) └── docs/            # Documentation
-
+- 
 ---
 
 ## 🛠️ Installation

@@ -1,196 +1,184 @@
-# 🤖 SmartX Assistance Bot
+# 🤖 SmartX Telegram Bot
 
-[![CI/CD](https://github.com/akshayverma3685/SmartX-Assistance-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/smartx-bot/actions)
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/yourusername/smartx-bot)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/yourusername/smartx-bot)
-[![Docker Pulls](https://img.shields.io/docker/pulls/yourdockerhub/smartx-bot.svg)](https://hub.docker.com/r/yourdockerhub/smartx-bot)
-[![License](https://img.shields.io/github/license/yourusername/smartx-bot)](LICENSE)
-
-SmartX Assistance Bot is a **production-ready Telegram bot** built with **Aiogram 3.x**.  
-It includes **AI tools, media downloaders, business utilities, premium features, and admin panel**.  
+SmartX is a **modular, scalable Telegram Bot** built with Python, supporting AI, downloads, entertainment, payments, business utilities, and an admin dashboard.  
+It uses **MongoDB + PostgreSQL + Redis + MinIO (S3)** for storage, **Celery** for background tasks, and supports **Prometheus metrics**.
 
 ---
 
 ## ✨ Features
-- ✅ Modular handlers (`handlers/`)
-- ✅ Service layer (`services/`)
-- ✅ Database support (Postgres / MongoDB)
-- ✅ Payment integration (Razorpay)
-- ✅ Admin panel (`admin-panel/`)
-- ✅ Structured logging (`logs/`)
-- ✅ CI/CD ready (GitHub Actions workflows)
-- ✅ Flexible deployment (Polling / Webhook)
-- 
+- 🔹 Multi-language support (English, Hindi)
+- 🔹 MongoDB for bot state & user data
+- 🔹 PostgreSQL for payments & audit logs
+- 🔹 Redis for caching, Celery tasks, and anti-spam
+- 🔹 MinIO (S3-compatible) for file storage
+- 🔹 Modular handlers (`handlers/*`)
+- 🔹 Admin Panel (`admin_panel/*`)
+- 🔹 Monitoring with Prometheus
+- 🔹 Worker for async tasks
+
 ---
 
-## 🛠️ Installation
+## ⚙️ Requirements
+- Python 3.10+
+- Docker + Docker Compose
+- Telegram Bot Token from [@BotFather](https://t.me/botfather)
 
-### 1. Clone Repository
+---
+
+## 🚀 Setup
+
+### 1️⃣ Clone Repository
 ```bash
 git clone https://github.com/yourusername/smartx-bot.git
 cd smartx-bot
 
-2. Create Virtual Environment
+2️⃣ Environment Variables
 
-python -m venv venv
-source venv/bin/activate   # Linux / Mac
-venv\Scripts\activate      # Windows
+Copy .env.example → .env and update values:
 
-3. Install Dependencies
+cp .env.example .env
 
-pip install -r requirements.txt
-
-4. Setup Environment Variables
-
-Create .env file:
+Required values:
 
 BOT_TOKEN=your_telegram_bot_token
-DATABASE_URL=postgresql+asyncpg://user:pass@localhost:5432/smartx
-OWNER_ID=123456789
-RUN_MODE=polling
-LOG_LEVEL=INFO
-WEBHOOK_URL=https://yourdomain.com/webhook
-
-5. Run the Bot
-
-python bot.py
+POSTGRES_USER=smartx
+POSTGRES_PASSWORD=smartx_pass
+POSTGRES_DB=smartx_db
+MONGO_URI=mongodb://mongo:27017
+REDIS_URL=redis://redis:6379/0
+MINIO_ACCESS_KEY=minio_access_key
+MINIO_SECRET_KEY=minio_secret_key
 
 
 ---
 
-🚀 Deployment Guide
+🐳 Deployment with Docker
 
-🌐 Railway (Recommended)
+Start services
 
+docker-compose build
+docker-compose up -d
 
+Run PostgreSQL migrations
 
-1. Fork this repo
+docker-compose run --rm bot alembic upgrade head
 
+Check logs
 
-2. Go to Railway → New Project → Deploy repo
-
-
-3. Add environment variables in Railway Dashboard
-
-
-4. Done ✅
-
-
+docker-compose logs -f bot
 
 
 ---
 
-🌐 Render
+🛢 Database
 
+MongoDB
 
+Used for user profiles, messages, bot states.
 
-1. Go to Render
+PostgreSQL
 
+Used for payments, subscriptions, audit logs.
+Migrations are managed with Alembic.
 
-2. New → Web Service → Connect repo
+Create new migration:
 
-
-3. Build Command:
-
-pip install -r requirements.txt
-
-Start Command:
-
-python bot.py
-
-
-4. Add environment variables
-
-
-5. Deploy ✅
-
-
+docker-compose run --rm bot alembic revision --autogenerate -m "new changes"
+docker-compose run --rm bot alembic upgrade head
 
 
 ---
 
-🌐 Heroku
+📊 Monitoring & Metrics
+
+Prometheus enabled if PROMETHEUS_ENABLED=true in .env
+
+Endpoint available at:
 
 
-
-heroku create smartx-bot
-heroku config:set BOT_TOKEN=xxx DATABASE_URL=xxx OWNER_ID=123456789
-git push heroku main
-
-
----
-
-🐳 Docker
-
-docker build -t smartx-bot .
-docker run -d --env-file .env smartx-bot
+http://localhost:8081/metrics
 
 
 ---
 
-🖥️ VPS (Ubuntu 20.04+)
+🧑‍💻 Development (Local without Docker)
 
-sudo apt update && sudo apt install python3-pip python3-venv git -y
-git clone https://github.com/yourusername/smartx-bot.git
-cd smartx-bot
+1. Create virtualenv
+
+
+
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-nohup python3 bot.py &
+
+2. Run bot
+
+
+
+python bot.py
+
+3. Run webhook server
+
+
+
+uvicorn webhook.server:app --host 0.0.0.0 --port 8080
 
 
 ---
 
-🔄 CI/CD Workflow
+🔧 Services
 
-This repo includes a GitHub Actions workflow (.github/workflows/ci.yml):
-
-Install dependencies
-
-Run flake8 linting
-
-Run black --check formatting
-
-Run pytest
+Celery Worker
 
 
-✅ If workflow is green → Repo is ready for deployment.
+docker-compose run --rm worker
+
+Admin API
 
 
----
+http://localhost:8081
 
-📜 Logging
+MinIO Dashboard
 
-Logs are stored in logs/ folder:
 
-bot.log → General activity
-
-error.log → Errors & exceptions
-
-payments.log → Payment-related activity
-
-usage.log → User interactions
-
+http://localhost:9000
 
 
 ---
 
-🐞 Troubleshooting
+🌍 Deployment on Cloud
 
-Bot crashes on startup → Run python -m compileall .
+1. Push code to GitHub/GitLab
 
-SyntaxError: unterminated string → Check string quotes
 
-Database errors → Verify DATABASE_URL
+2. Setup VPS/Cloud (AWS, GCP, Hetzner, DigitalOcean, etc.)
 
-Bot not responding → Check BOT_TOKEN & Telegram API status
+
+3. Install Docker + Compose
+
+
+4. Pull repo and run:
+
+
+
+docker-compose up -d
+
+5. Use NGINX + Certbot for HTTPS on webhook & admin API.
+
 
 
 
 ---
 
-👨‍💻 Maintainers
+👨‍💻 Authors
 
-Developed by Akshay Verma
-📬 Contact: Open GitHub Issue
+Akshay Verma
+Telegram: @akshayverma0212
+
+
+
+---
+
+📜 License
+
+MIT License
